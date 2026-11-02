@@ -1,0 +1,246 @@
+:root {
+  --bg: #f4f7f8;
+  --ink: #123b77;
+  --sub: #5e6a7c;
+  --card: #ffffff;
+  --line: #cfdbe9;
+  --weekday: #4f83b7;
+  --sat: #e58caf;
+  --sun: #ef8ea8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  background: linear-gradient(180deg, #f8fbfc 0%, #eff5f4 100%);
+  color: #1d2a3b;
+}
+.app-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+.hero {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: clamp(28px, 4vw, 42px);
+}
+.hero p {
+  margin: 0;
+  color: var(--sub);
+  font-size: 15px;
+}
+.controls {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  margin-bottom: 20px;
+}
+.upload-card {
+  width: min(100%, 560px);
+  padding: 20px;
+  border: 2px dashed #a8c3da;
+  border-radius: 18px;
+  background: rgba(255,255,255,.85);
+  text-align: center;
+  cursor: pointer;
+}
+.upload-card input { display: none; }
+.upload-title {
+  display: block;
+  font-weight: 800;
+  color: var(--ink);
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+.upload-subtitle {
+  display: block;
+  color: var(--sub);
+  font-size: 14px;
+}
+button {
+  border: none;
+  background: #2f75c9;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 14px 18px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+button:disabled { opacity: .45; cursor: not-allowed; }
+.status {
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #d8e3ed;
+}
+.status.working { color: #7b4d00; background: #fff7d9; }
+.status.ok { color: #0c6c43; background: #e7f8ee; }
+.status.error { color: #b12828; background: #fdeaea; }
+.preview-wrap {
+  display: flex;
+  justify-content: center;
+}
+.calendar-phone {
+  width: min(100%, 420px);
+  aspect-ratio: 9 / 16;
+  background: linear-gradient(180deg, #fafdff 0%, #f5fbf7 100%);
+  border-radius: 28px;
+  box-shadow: 0 12px 30px rgba(36, 78, 120, .12);
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.calendar-phone::before,
+.calendar-phone::after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle at 40% 40%, rgba(174, 229, 199, .65), rgba(174, 229, 199, 0));
+  z-index: 0;
+}
+.calendar-phone::before { top: -40px; left: -40px; }
+.calendar-phone::after { right: -40px; bottom: -40px; }
+.empty-state {
+  display: grid;
+  place-items: center;
+  color: #607184;
+}
+.placeholder { text-align: center; z-index: 1; }
+.placeholder-icon { font-size: 42px; margin-bottom: 10px; }
+.calendar-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 12px;
+}
+.calendar-header {
+  background: rgba(232, 246, 238, .9);
+  border-radius: 22px;
+  padding: 18px 20px;
+  position: relative;
+}
+.calendar-title {
+  text-align: center;
+  color: var(--ink);
+  font-size: clamp(28px, 6vw, 48px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin: 0;
+}
+.calendar-badge {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  background: white;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 800;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+.leaf {
+  position: absolute;
+  width: 64px;
+  opacity: .8;
+}
+.leaf.left { left: 8px; top: 8px; }
+.leaf.right { right: 8px; top: 8px; transform: scaleX(-1); }
+.weekday-row,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+.weekday-row {
+  gap: 0;
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: 18px 18px 0 0;
+  overflow: hidden;
+}
+.weekday {
+  background: #d9ecfb;
+  color: var(--ink);
+  text-align: center;
+  font-weight: 800;
+  padding: 10px 4px;
+  border-right: 1px solid var(--line);
+}
+.weekday:nth-child(6) { background: #f9dbe4; color: #a12447; }
+.weekday:nth-child(7) { background: #f9d1dc; color: #9e1b45; border-right: none; }
+.calendar-grid {
+  border: 1px solid var(--line);
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  overflow: hidden;
+  grid-auto-rows: 1fr;
+  height: 100%;
+}
+.day-cell {
+  min-height: 0;
+  border-right: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  padding: 8px 8px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.day-cell:nth-child(7n) { border-right: none; }
+.day-number {
+  font-size: 18px;
+  font-weight: 900;
+  color: #0c1e4d;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.day-label {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.08;
+  white-space: pre-line;
+  color: #071a43;
+}
+.day-label.marker {
+  font-size: 40px;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.marker-rest { color: #0f6a1e; }
+.marker-regular_leave { color: #d31759; }
+.marker-holiday { color: #b36a00; }
+.leaf svg path { fill: #74c28c; }
+@media (min-width: 860px) {
+  .app-shell {
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) minmax(420px, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .hero, .controls { grid-column: 1; }
+  .preview-wrap { grid-column: 2; align-self: start; }
+  .hero { text-align: left; }
+  .controls { justify-items: start; }
+}
+
+/* A seven-column mobile calendar needs compact shift typography. */
+.day-cell { padding: 6px 2px 4px; min-width: 0; overflow: hidden; }
+.day-number { font-size: 14px; margin-bottom: 8px; padding-left: 3px; }
+.day-label { font-size: clamp(10px, 2.7vw, 16px); text-align: center; letter-spacing: -0.4px; overflow-wrap: anywhere; }
+.day-label.marker { font-size: clamp(23px, 6vw, 34px); }
+.calendar-phone { padding: 12px; border-radius: 22px; }
+.calendar-content { gap: 8px; }
+.calendar-header { padding: 12px 6px; }
+.calendar-title { font-size: clamp(25px, 7vw, 34px); }
+.calendar-badge { font-size: 11px; bottom: 4px; right: 10px; padding: 4px 8px; }
+.weekday { font-size: clamp(9px, 2.6vw, 13px); padding: 8px 1px; }
+@media (min-width: 421px) { .day-label {font-size: 15px} }

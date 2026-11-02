@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>自動月班表產生器</title>
+  <meta name="theme-color" content="#eef7f2" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <h1>自動月班表產生器</h1>
+      <p>上傳班表照片後，自動辨識指定班表列，產生 9:16 手機班表。</p>
+    </header>
+
+    <section class="controls">
+      <label class="upload-card">
+        <input type="file" id="imageInput" accept="image/*" capture="environment" />
+        <span class="upload-title">上傳或拍攝班表照片</span>
+        <span class="upload-subtitle">支援 iPhone 直接拍照，選完即自動開始辨識</span>
+      </label>
+      <button id="downloadBtn" disabled>下載 PNG</button>
+      <div id="status" class="status idle">等待上傳照片</div>
+    </section>
+
+    <section class="preview-wrap">
+      <div id="calendarRoot" class="calendar-phone empty-state">
+        <div class="placeholder">
+          <div class="placeholder-icon">📅</div>
+          <div>尚未產生班表</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

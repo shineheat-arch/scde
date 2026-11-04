@@ -1,9 +1,8 @@
 const express = require('express');
 const multer = require('multer');
-const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
-const OpenAI = require('openai');
+const { recognize } = require('./gemini');
 
 dotenv.config();
 
@@ -20,19 +19,13 @@ const upload = multer({
   }
 });
 
-const apiKey = process.env.OPENAI_API_KEY;
-const model = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
-const client = apiKey ? new OpenAI({ apiKey }) : null;
+const apiKey = process.env.GEMINI_API_KEY;
+const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json({ limit: '2mb' }));
 app.disable('x-powered-by');
 app.get('/health', (_, res) => res.json({ status: 'ok' }));
-
-function cleanup(filePath) {
-  if (!filePath) return;
-  fs.unlink(filePath, () => {});
-}
 
 function extractJson(text) {
   const fenced = text.match(/```json\s*([\s\S]*?)```/i);
@@ -94,8 +87,8 @@ If the row is not found, return:
 app.post('/api/extract-schedule', upload.single('image'), async (req, res) => {
   
   try {
-    if (!client) {
-      return res.status(500).json({ error: 'Server is not configured. Please add OPENAI_API_KEY to .env.' });
+    if (!apiKey) {
+      return res.status(503).json({ error: 'Google 照片辨識尚未啟用，請先設定後端 GEMINI_API_KEY。' });
     }
     if (!req.file) {
       return res.status(400).json({ error: 'No image uploaded.' });
@@ -105,23 +98,7 @@ app.post('/api/extract-schedule', upload.single('image'), async (req, res) => {
     const base64 = imageBuffer.toString('base64');
     const mime = req.file.mimetype || 'image/jpeg';
 
-    const response = await client.responses.create({
-      model,
-      input: [
-        {
-          role: 'user',
-          content: [
-            { type: 'input_text', text: extractionPrompt },
-            {
-              type: 'input_image',
-              image_url: `data:${mime};base64,${base64}`
-            }
-          ]
-        }
-      ]
-    });
-
-    const outputText = response.output_text || '';
+    const outputText = await recognize({ apiKey, model, prompt: extractionPrompt, mime, base64 });
     const data = extractJson(outputText);
     if (data.found !== true || data.employeeId !== '25001104') {
       return res.json({ found: false, notes: '找不到指定班表列，請重新拍攝。' });
@@ -148,8 +125,9 @@ app.post('/api/extract-schedule', upload.single('image'), async (req, res) => {
     if (days.length < 1) return res.status(422).json({ error: '未能讀到可確認的班別，請重新拍攝。' });
     res.json({ found: true, month, year, yearInferred: !!data.yearInferred, days, notes: '' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to extract schedule.', details: error.message });
+    const timeout = error.name === 'TimeoutError' || error.name === 'AbortError';
+    console.error('Schedule recognition failed', { type: error.name, status: error.status || 500 });
+    res.status(timeout ? 504 : (error.status || 502)).json({ error: timeout ? '辨識逾時，請稍後再試。' : (error.status ? error.message : '辨識未完成，請重新上傳清晰班表。') });
   }
 });
 

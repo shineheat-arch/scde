@@ -19,7 +19,7 @@
 ## 環境需求
 
 - Node.js 18+
-- OpenAI API Key
+- Google Gemini API Key
 
 ## 安裝與啟動
 
@@ -31,8 +31,8 @@ cp .env.example .env
 編輯 `.env`：
 
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-4.1-mini
+GEMINI_API_KEY=your_openai_api_key_here
+GEMINI_MODEL=gemini-3.8-flash
 PORT=3000
 ```
 
@@ -77,14 +77,14 @@ http://localhost:3000
 
 1. 把本專案上傳到自己的 **GitHub 私有儲存庫**（不要上傳 `.env`）。
 2. 登入 [Render](https://dashboard.render.com/)，選擇 **New → Blueprint**，連接該 GitHub 儲存庫。
-3. Render 會讀取根目錄 `render.yaml`。依提示填入 `OPENAI_API_KEY`，此金鑰只存在 Render 後端環境變數，**不要寫到前端**。
+3. Render 會讀取根目錄 `render.yaml`。依提示填入 `GEMINI_API_KEY`，此金鑰只存在 Render 後端環境變數，**不要寫到前端**。
 4. 點選套用／部署，待服務通過 `/health` 健康檢查，即可開啟 Render 提供的 HTTPS 網址。
 5. 用 iPhone Safari 開啟網址，點分享 → 加入主畫面。
 
 ### 注意事項
 
-- 部署需要自己的 Render 帳號、GitHub 儲存庫及 OpenAI API 金鑰；API 使用可能產生費用。
+- 部署需要自己的 Render 帳號、GitHub 儲存庫及 Google Gemini API 金鑰；API 使用可能產生費用。
 - Render 免費方案可能有閒置休眠、流量或資源限制，實際條件依當時 Render 公告。
-- 照片會送至 OpenAI API 做辨識，網站只在記憶體暫存上傳圖片，不建立永久相簿或資料庫。不要上傳未經授權的員工個資；建議將原圖裁切到必要區域。
+- 照片會送至 Google Gemini API 做辨識，網站只在記憶體暫存上傳圖片，不建立永久相簿或資料庫。不要上傳未經授權的員工個資；建議將原圖裁切到必要區域。
 - AI 仍可能誤讀時段；正式使用前請核對原始照片。原圖中無法可靠辨識的班別不應被視為已確認。
-- Render Blueprint 的 `OPENAI_API_KEY: sync: false` 會要求部署時輸入；如果服務已存在，請至 Environment 手動設定。
+- Render Blueprint 的 `GEMINI_API_KEY: sync: false` 會要求部署時輸入；如果服務已存在，請至 Environment 手動設定。

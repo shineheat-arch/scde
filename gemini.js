@@ -14,6 +14,9 @@ async function recognize({ apiKey, model, prompt, mime, base64, fetchImpl = fetc
     }
   );
   if (!response.ok) {
+    const problem = await response.json().catch(() => ({}));
+    const reason = String(problem.error?.message || '').replaceAll(apiKey, '[REDACTED]').replace(/(?:AQ\.|AIza|sk-)[A-Za-z0-9_.-]+/g, '[REDACTED]').slice(0, 600);
+    console.error('Gemini upstream error', { status: response.status, reason });
     const messages = {
       400: 'Google 無法處理圖片或設定，請確認 Gemini 金鑰、模型與圖片格式。',
       401: 'Google API 金鑰驗證失敗，請檢查後端設定。',

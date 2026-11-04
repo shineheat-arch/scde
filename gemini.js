@@ -9,7 +9,7 @@ async function recognize({ apiKey, model, prompt, mime, base64, fetchImpl = fetc
         contents: [{ role: 'user', parts: [
           { text: prompt }, { inlineData: { mimeType: mime, data: base64 } }
         ] }],
-        generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 8192, thinkingConfig: { thinkingLevel: 'MINIMAL' } }
+        generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 8192, thinkingConfig: { thinkingLevel: 'LOW' } }
       })
     }
   );
@@ -37,4 +37,3 @@ async function recognize({ apiKey, model, prompt, mime, base64, fetchImpl = fetc
 }
 
 module.exports = { recognize };
-
